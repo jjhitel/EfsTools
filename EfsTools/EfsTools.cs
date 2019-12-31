@@ -369,7 +369,7 @@ namespace EfsTools
                 var b = Directory.Exists(path);
                 var tmpPath = Path.Combine(Path.GetTempPath(), "EfsTools", Path.GetRandomFileName());
                 Directory.CreateDirectory(tmpPath);
-                ExtractMbn(path, tmpPath, true);
+                ExtractMbn(path, tmpPath, false);
                 return tmpPath;
             }
 
