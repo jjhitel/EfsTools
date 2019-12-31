@@ -453,25 +453,23 @@ namespace EfsTools.Utils
                 var fileName = Path.GetFileName(computerPath);
                 if (fileName != null)
                 {
-                    var isItemFile = false;
-                    var permission = 0777;
+                    var isItemFile = createItemFilesAsDefault;
+                    var permission = 0x81FF;
                     var info = PathUtils.ParsePath(fileName);
-                    if (info == null)
-                    {
-                        isItemFile = createItemFilesAsDefault;
-                        if (isItemFile)
-                        {
-                            var size = GetFileSize(computerPath);
-                            if (size > 2048)
-                            {
-                                isItemFile = false;
-                            }
-                        }
-                    }
-                    else
+                    if (info != null)
                     {
                         permission = info.Permission;
                         isItemFile = info.IsItemFile;
+                    }
+
+                    // Fail-safe in case we're trying to write a large item file
+                    if (isItemFile)
+                    {
+                        var size = GetFileSize(computerPath);
+                        if (size > 2048)
+                        {
+                            isItemFile = false;
+                        }
                     }
 
                     PhoneWriteFile(manager, computerPath, efsPath, permission, isItemFile, logger);
